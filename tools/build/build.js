@@ -15,13 +15,6 @@ const COPY_DIRS = [
 
 const COPY_FILES = ['index.html', 'manifest.json', 'sw.js'];
 
-// Built browser.js chrome — must be built before running this script
-// (npm run build:vendor).  Copied verbatim so the path
-// vendor/browser.js/packages/chrome/dist/index.html stays identical in
-// both local dev (served from repo root) and production (build/dist/).
-const BROWSER_JS_DIST_SRC = path.join(ROOT, 'vendor/browser.js/packages/chrome/dist');
-const BROWSER_JS_DIST_DST = path.join(DIST, 'vendor/browser.js/packages/chrome/dist');
-
 async function build() {
   console.log('🦎 geckoOS build starting...');
   const start = Date.now();
@@ -50,15 +43,6 @@ async function build() {
     } catch {
       console.warn(`  - ${file} (not found, skipping)`);
     }
-  }
-
-  // Copy browser.js built chrome
-  try {
-    await fs.mkdir(BROWSER_JS_DIST_DST, { recursive: true });
-    await fs.cp(BROWSER_JS_DIST_SRC, BROWSER_JS_DIST_DST, { recursive: true });
-    console.log('  ✓ vendor/browser.js/packages/chrome/dist/');
-  } catch {
-    console.warn('  - vendor/browser.js dist not found — run npm run build:vendor first');
   }
 
   // Write build metadata

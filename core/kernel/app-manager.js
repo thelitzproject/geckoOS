@@ -76,45 +76,6 @@ const BUILTIN_APPS = [
     allowMultiple: false,
   },
   {
-    id: 'browser',
-    name: 'Browser',
-    icon: 'assets/icons/apps/browser.svg',
-    module: '../../apps/browser/index.js',
-    category: 'internet',
-    keywords: ['browser', 'web', 'internet', 'tabs', 'http', 'url'],
-    defaultSize: { width: 1100, height: 700 },
-    allowMultiple: true,
-    menus: [
-      {
-        label: 'File',
-        items: [
-          { label: 'New Tab',    shortcut: '⌘T' },
-          { label: 'New Window', shortcut: '⌘N' },
-          { separator: true },
-          { label: 'Close Tab',  shortcut: '⌘W' },
-        ],
-      },
-      {
-        label: 'View',
-        items: [
-          { label: 'Reload',     shortcut: '⌘R' },
-          { label: 'Find…',      shortcut: '⌘F' },
-          { separator: true },
-          { label: 'Zoom In',    shortcut: '⌘+' },
-          { label: 'Zoom Out',   shortcut: '⌘-' },
-          { label: 'Reset Zoom', shortcut: '⌘0' },
-        ],
-      },
-      {
-        label: 'History',
-        items: [
-          { label: 'Show History',    shortcut: '⌘Y' },
-          { label: 'Show Bookmarks',  shortcut: '⌘B' },
-        ],
-      },
-    ],
-  },
-  {
     id: 'snake',
     name: 'Snake',
     icon: 'assets/icons/apps/snake.svg',

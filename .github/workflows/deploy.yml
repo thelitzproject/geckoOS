@@ -23,25 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clone browser.js and its dependencies
-        run: |
-          git clone --depth=1 https://github.com/thelitzproject/browser.js vendor/browser.js
-          git clone --depth=1 https://github.com/MercuryWorkshop/dreamlandjs vendor/browser.js/external/dreamlandjs
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: latest
-
-      - name: Build browser.js chrome
-        working-directory: vendor/browser.js
-        run: |
-          pnpm install
-          cd packages/chrome && pnpm exec vite build --base ./
 
       - run: npm ci
 

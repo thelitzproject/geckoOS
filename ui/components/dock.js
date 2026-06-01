@@ -1,4 +1,4 @@
-const DEFAULT_DOCK_APPS = ['finder', 'terminal', 'browser', 'textpad', 'settings', 'app-store'];
+const DEFAULT_DOCK_APPS = ['finder', 'terminal', 'textpad', 'settings', 'app-store'];
 
 export class Dock {
   #kernel;
