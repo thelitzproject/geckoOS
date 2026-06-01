@@ -1,3 +1,0 @@
-[submodule "vendor/browser.js"]
-	path = vendor/browser.js
-	url = https://github.com/thelitzproject/browser.js

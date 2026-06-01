@@ -23,8 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Initialize browser.js submodule
-        run: git submodule update --init --depth=1 vendor/browser.js
+      - name: Clone browser.js
+        run: git clone --depth=1 https://github.com/thelitzproject/browser.js vendor/browser.js
 
       - uses: actions/setup-node@v4
         with:
