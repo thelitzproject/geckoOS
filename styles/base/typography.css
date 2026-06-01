@@ -1,0 +1,16 @@
+.text-sm    { font-size: var(--font-size-sm); }
+.text-md    { font-size: var(--font-size-md); }
+.text-lg    { font-size: var(--font-size-lg); }
+.text-xl    { font-size: var(--font-size-xl); }
+
+.text-primary   { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary  { color: var(--color-text-tertiary); }
+
+.font-mono { font-family: var(--font-mono); }
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

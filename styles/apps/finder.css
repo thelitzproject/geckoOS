@@ -1,0 +1,3 @@
+.finder-sidebar-item { transition: background var(--transition-fast); }
+.finder-sidebar-item:hover { background: var(--color-sidebar-hover); }
+.finder-sidebar-item.active { background: var(--color-sidebar-active); color: var(--color-accent); }

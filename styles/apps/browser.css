@@ -1,0 +1,2 @@
+.browser-tab { transition: background var(--transition-fast); }
+.browser-tab.active { background: var(--color-surface-1); font-weight: 500; }

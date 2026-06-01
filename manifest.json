@@ -1,0 +1,17 @@
+{
+  "name": "geckoOS",
+  "short_name": "geckoOS",
+  "description": "geckoOS 1.0.0 \"Bijou\" — a web-based desktop operating system",
+  "version": "1.0.0",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#1c1c1e",
+  "theme_color": "#1c1c1e",
+  "icons": [
+    { "src": "assets/icons/system/gecko-mark.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "assets/icons/system/gecko-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/system/gecko-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "categories": ["utilities", "productivity"]
+}

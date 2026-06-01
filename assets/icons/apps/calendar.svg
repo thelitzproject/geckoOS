@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="22" fill="white"/>
+  <rect x="0" y="0" width="100" height="34" rx="22" fill="#ff3b30"/>
+  <rect x="0" y="12" width="100" height="22" fill="#ff3b30"/>
+  <rect x="6" y="28" width="88" height="66" rx="10" fill="white"/>
+  <text x="50" y="22" font-family="-apple-system" font-size="12" fill="white" text-anchor="middle" font-weight="600">JUNE</text>
+  <text x="50" y="72" font-family="-apple-system" font-size="36" fill="#1c1c1e" text-anchor="middle" font-weight="200">6</text>
+</svg>

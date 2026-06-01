@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1c1c1e" />
+  <title>geckoOS</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icons/system/gecko-mark.svg" />
+
+  <!-- Base styles -->
+  <link rel="stylesheet" href="styles/base/reset.css" />
+  <link rel="stylesheet" href="styles/base/variables.css" />
+  <link rel="stylesheet" href="styles/base/typography.css" />
+
+  <!-- Component styles -->
+  <link rel="stylesheet" href="styles/components/menubar.css" />
+  <link rel="stylesheet" href="styles/components/dock.css" />
+  <link rel="stylesheet" href="styles/components/window.css" />
+  <link rel="stylesheet" href="styles/components/context-menu.css" />
+  <link rel="stylesheet" href="styles/components/spotlight.css" />
+  <link rel="stylesheet" href="styles/components/notification.css" />
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="styles/apps/terminal.css" />
+  <link rel="stylesheet" href="styles/apps/finder.css" />
+  <link rel="stylesheet" href="styles/apps/browser.css" />
+  <link rel="stylesheet" href="styles/apps/settings.css" />
+  <link rel="stylesheet" href="styles/apps/textpad.css" />
+  <!-- Default theme -->
+  <link rel="stylesheet" href="themes/default/theme.css" />
+
+  <!-- OOBE -->
+  <link rel="stylesheet" href="styles/oobe.css" />
+</head>
+<body>
+  <div id="gecko-boot-screen">
+    <div class="boot-logo">
+      <img src="assets/icons/system/gecko-mark.svg" alt="geckoOS" />
+      <div class="boot-spinner"></div>
+    </div>
+    <p class="boot-version">geckoOS 1.0.0 "Bijou"</p>
+  </div>
+
+  <div id="gecko-desktop" hidden>
+    <!-- Menu Bar -->
+    <div id="menubar">
+      <div id="menubar-left">
+        <button id="gecko-menu-btn" class="menubar-item menubar-logo" aria-label="geckoOS menu">
+          <img src="assets/icons/system/gecko-mark.svg" alt="" />
+        </button>
+        <span id="menubar-app-name" class="menubar-item menubar-app-name"></span>
+        <nav id="menubar-app-menus" class="menubar-menus"></nav>
+      </div>
+      <div id="menubar-right">
+        <button class="menubar-item menubar-status" id="wifi-indicator" aria-label="Network">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1.5 8.5C5.2 4.8 10.3 2.5 16 2.5s10.8 2.3 14.5 6L28 11c-3.1-3.1-7.4-5-12-5S7.1 7.9 4 11L1.5 8.5z"/>
+          </svg>
+        </button>
+        <button class="menubar-item menubar-status" id="battery-indicator" aria-label="Battery">
+          <svg width="16" height="12" viewBox="0 0 24 16" fill="currentColor">
+            <rect x="1" y="2" width="19" height="12" rx="2" ry="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <rect x="3" y="4" width="13" height="8" rx="1" fill="currentColor"/>
+            <path d="M21 6v4a2 2 0 000-4z"/>
+          </svg>
+        </button>
+        <button class="menubar-item menubar-status" id="spotlight-btn" aria-label="Spotlight Search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </button>
+        <div id="menubar-clock" class="menubar-item menubar-clock"></div>
+      </div>
+    </div>
+
+    <!-- Desktop Surface -->
+    <div id="desktop-surface">
+      <div id="desktop-icons"></div>
+      <div id="window-layer"></div>
+    </div>
+
+    <!-- Dock -->
+    <div id="dock-container">
+      <div id="dock">
+        <div id="dock-apps"></div>
+        <div class="dock-separator"></div>
+        <div id="dock-running"></div>
+      </div>
+    </div>
+
+    <!-- OOBE Overlay -->
+    <div id="oobe-overlay" hidden></div>
+
+    <!-- Spotlight Overlay -->
+    <div id="spotlight-overlay" hidden>
+      <div id="spotlight-panel">
+        <div id="spotlight-input-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input id="spotlight-input" type="text" placeholder="Spotlight Search" autocomplete="off" spellcheck="false" />
+        </div>
+        <div id="spotlight-results"></div>
+      </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" hidden></div>
+
+    <!-- Notification Center -->
+    <div id="notification-tray"></div>
+
+    <!-- Gecko Menu Dropdown -->
+    <div id="gecko-menu-dropdown" hidden>
+      <button class="gecko-menu-item" data-action="about">About geckoOS</button>
+      <div class="gecko-menu-divider"></div>
+      <button class="gecko-menu-item" data-action="app-store">Gecko App Store</button>
+      <button class="gecko-menu-item" data-action="settings">System Settings</button>
+      <div class="gecko-menu-divider"></div>
+<button class="gecko-menu-item" data-action="restart">Restart...</button>
+    </div>
+  </div>
+
+<!-- Core scripts (order matters) -->
+  <script src="core/kernel/gecko.js" type="module"></script>
+</body>
+</html>

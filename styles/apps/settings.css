@@ -1,0 +1,2 @@
+.settings-section { padding: 16px 24px; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 0.5px solid var(--color-separator); }

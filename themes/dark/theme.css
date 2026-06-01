@@ -1,0 +1,4 @@
+/* geckoOS dark theme — activated by [data-theme="dark"] on <html> */
+/* All overrides are defined in themes/default/theme.css using the data-theme selector. */
+/* This file exists as an explicit import target for builds that want dark-only bundles. */
+@import url('../default/theme.css');

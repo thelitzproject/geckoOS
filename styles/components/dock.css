@@ -1,0 +1,112 @@
+#dock-container {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: var(--z-dock);
+  display: flex;
+  justify-content: center;
+  padding-bottom: 6px;
+  pointer-events: none;
+}
+
+#dock-apps,
+#dock-running {
+  display: flex;
+  align-items: flex-end;
+}
+
+#dock {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding: var(--dock-padding) var(--dock-padding);
+  background: var(--color-dock-bg);
+  -webkit-backdrop-filter: var(--blur-dock);
+  backdrop-filter: var(--blur-dock);
+  border: 1px solid var(--color-dock-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+  pointer-events: auto;
+}
+
+.dock-separator {
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.25);
+  margin: 0 4px;
+  align-self: center;
+}
+
+.dock-icon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 var(--dock-icon-gap);
+  transition: transform var(--transition-base);
+  transform-origin: bottom center;
+}
+
+.dock-icon:hover {
+  transform: scale(1.4) translateY(-8px);
+}
+
+.dock-icon:hover ~ .dock-icon,
+.dock-icon:has(~ .dock-icon:hover) {
+  transform: scale(1.2) translateY(-4px);
+}
+
+.dock-icon img {
+  width: var(--dock-icon-size);
+  height: var(--dock-icon-size);
+  border-radius: 12px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.dock-icon-label {
+  position: absolute;
+  bottom: calc(var(--dock-icon-size) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30,30,30,0.88);
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.dock-icon:hover .dock-icon-label {
+  opacity: 1;
+}
+
+.dock-icon-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--color-text-secondary);
+  border-radius: 50%;
+  margin-top: 3px;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.dock-icon.running .dock-icon-dot {
+  opacity: 1;
+}
+
+/* Bounce animation on launch */
+@keyframes dock-bounce {
+  0%, 100% { transform: scale(1) translateY(0); }
+  20%       { transform: scale(1.4) translateY(-16px); }
+  40%       { transform: scale(1) translateY(0); }
+  60%       { transform: scale(1.2) translateY(-8px); }
+  80%       { transform: scale(1) translateY(0); }
+}
+
+.dock-icon.bouncing {
+  animation: dock-bounce 800ms ease;
+}

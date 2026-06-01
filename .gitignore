@@ -134,3 +134,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+node_modules/
+build/dist/
+coverage/
+playwright-report/
+.DS_Store
+*.local
+.env
+.env.*

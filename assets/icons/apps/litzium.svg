@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="litzBg" cx="40%" cy="35%" r="65%">
+      <stop offset="0%"   stop-color="#2d2d5e"/>
+      <stop offset="100%" stop-color="#13131f"/>
+    </radialGradient>
+    <linearGradient id="litzAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#9399f8"/>
+      <stop offset="100%" stop-color="#7c83f7"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="100" height="100" rx="22" fill="url(#litzBg)"/>
+  <!-- Globe rings -->
+  <circle cx="50" cy="50" r="28" fill="none" stroke="url(#litzAccent)" stroke-width="2.5" opacity="0.8"/>
+  <ellipse cx="50" cy="50" rx="14" ry="28" fill="none" stroke="url(#litzAccent)" stroke-width="1.8" opacity="0.6"/>
+  <line x1="22" y1="50" x2="78" y2="50" stroke="url(#litzAccent)" stroke-width="1.8" opacity="0.6"/>
+  <line x1="26" y1="36" x2="74" y2="36" stroke="url(#litzAccent)" stroke-width="1.4" opacity="0.4"/>
+  <line x1="26" y1="64" x2="74" y2="64" stroke="url(#litzAccent)" stroke-width="1.4" opacity="0.4"/>
+  <!-- Cursor arrow (browser icon motif) -->
+  <path d="M36 28 L28 62 L40 54 L46 70 L52 66 L46 50 L60 50 Z" fill="url(#litzAccent)" opacity="0.95"/>
+</svg>

@@ -1,0 +1,114 @@
+/* geckoOS default light theme */
+[data-theme="light"] {
+  --color-accent:          #007aff;
+  --color-desktop-bg:      #6e8ea8;
+  --color-menubar-bg:      rgba(255,255,255,0.72);
+  --color-menubar-text:    rgba(0,0,0,0.85);
+  --color-menubar-border:  rgba(0,0,0,0.12);
+  --color-menubar-hover:   rgba(0,0,0,0.08);
+  --color-dock-bg:         rgba(255,255,255,0.25);
+  --color-dock-border:     rgba(255,255,255,0.35);
+  --color-window-bg:       rgba(246,246,246,0.95);
+  --color-window-titlebar: rgba(236,236,236,0.92);
+  --color-window-border:   rgba(0,0,0,0.18);
+  --color-window-text:     #1c1c1e;
+  --color-sidebar-bg:      rgba(246,246,246,0.6);
+  --color-sidebar-text:    #3a3a3c;
+  --color-sidebar-hover:   rgba(0,0,0,0.06);
+  --color-text-primary:    #1c1c1e;
+  --color-text-secondary:  #636366;
+  --color-text-tertiary:   #aeaeb2;
+  --color-surface-1:       #ffffff;
+  --color-surface-2:       #f2f2f7;
+  --color-surface-3:       #e5e5ea;
+  --color-border:          rgba(0,0,0,0.1);
+  --color-separator:       rgba(0,0,0,0.08);
+}
+
+[data-theme="dark"] {
+  --color-accent:          #0a84ff;
+  --color-desktop-bg:      #1c1c2e;
+  --color-menubar-bg:      rgba(28,28,30,0.82);
+  --color-menubar-text:    rgba(255,255,255,0.88);
+  --color-menubar-border:  rgba(255,255,255,0.08);
+  --color-menubar-hover:   rgba(255,255,255,0.1);
+  --color-dock-bg:         rgba(40,40,45,0.7);
+  --color-dock-border:     rgba(255,255,255,0.15);
+  --color-window-bg:       rgba(28,28,30,0.95);
+  --color-window-titlebar: rgba(38,38,42,0.95);
+  --color-window-border:   rgba(255,255,255,0.1);
+  --color-window-text:     #f2f2f7;
+  --color-sidebar-bg:      rgba(38,38,42,0.6);
+  --color-sidebar-text:    #ebebf5;
+  --color-sidebar-hover:   rgba(255,255,255,0.06);
+  --color-text-primary:    #f2f2f7;
+  --color-text-secondary:  #98989d;
+  --color-text-tertiary:   #636366;
+  --color-surface-1:       #1c1c1e;
+  --color-surface-2:       #2c2c2e;
+  --color-surface-3:       #3a3a3c;
+  --color-border:          rgba(255,255,255,0.08);
+  --color-separator:       rgba(255,255,255,0.06);
+}
+
+/* Desktop surface */
+#desktop-surface {
+  position: absolute;
+  inset: 0;
+  top: var(--menubar-height);
+  background: var(--color-desktop-bg) center/cover no-repeat;
+}
+
+/* Boot screen */
+#gecko-boot-screen[hidden] {
+  display: none;
+}
+
+#gecko-boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-boot);
+  background: #1c1c1e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.boot-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.boot-logo img {
+  width: 80px;
+  height: 80px;
+  animation: boot-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes boot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.7; transform: scale(0.97); }
+}
+
+.boot-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255,255,255,0.12);
+  border-top-color: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.boot-version {
+  color: rgba(255,255,255,0.4);
+  font-size: 12px;
+}
+
+/* App styles placeholders */
+.finder-sidebar {}

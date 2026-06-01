@@ -1,0 +1,14 @@
+{
+  "id": "hello-world",
+  "name": "Hello World",
+  "icon": "icon.svg",
+  "category": "utilities",
+  "keywords": ["hello", "example", "template"],
+  "size": { "width": 480, "height": 320 },
+  "multi": false,
+  "resizable": true,
+  "module": "./index.js",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "description": "A minimal geckoOS app example."
+}
