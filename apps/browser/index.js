@@ -71,6 +71,7 @@ export default class BrowserApp {
         Run these two commands in the geckoOS root, then reload:
       </p>
       <pre style="background:#1a1a2e;border:1px solid #2a2a42;border-radius:10px;padding:16px 20px;font-size:12px;text-align:left;line-height:1.8;color:#c0c0e0;margin-bottom:20px;">git clone --depth=1 https://github.com/thelitzproject/browser.js vendor/browser.js
+git clone --depth=1 https://github.com/MercuryWorkshop/dreamlandjs vendor/browser.js/external/dreamlandjs
 npm run build:vendor</pre>
       <p style="font-size:11px;color:#555570">
         On GitHub Pages this is handled automatically by the deploy workflow.

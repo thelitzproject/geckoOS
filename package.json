@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev":       "npx serve . --port 3000 --no-clipboard",
-    "build:vendor": "cd vendor/browser.js && pnpm install && pnpm --filter \"./packages/chrome\" run build -- --base ./",
+    "build:vendor": "cd vendor/browser.js && pnpm install && cd packages/chrome && pnpm exec vite build --base ./",
     "build":     "node tools/build/build.js",
     "lint":      "npx eslint . --ext .js --ignore-path .eslintignore",
     "test":      "node --experimental-vm-modules node_modules/.bin/jest",
