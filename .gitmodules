@@ -1,6 +1,3 @@
-[submodule "vendor/aboutproxy"]
-	path = vendor/aboutproxy
-	url = https://github.com/r58Playz/aboutproxy
 [submodule "vendor/browser.js"]
 	path = vendor/browser.js
 	url = https://github.com/thelitzproject/browser.js
