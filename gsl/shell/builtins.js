@@ -203,14 +203,51 @@ export class Builtins {
         return { stdout: '', stderr: '', code: 0 };
       },
 
-      grep: ([pattern, ...files], stdin) => {
-        const re = new RegExp(pattern);
+      grep: async ([pattern, ...args], stdin) => {
+        const flags   = args.filter(a => a.startsWith('-')).join('');
+        const files   = args.filter(a => !a.startsWith('-'));
+        const ignCase = flags.includes('i');
+        const lineNum = flags.includes('n');
+        const invert  = flags.includes('v');
+        const count   = flags.includes('c');
+
+        let re;
+        try { re = new RegExp(pattern, ignCase ? 'i' : ''); }
+        catch (e) { return { stdout: '', stderr: `grep: invalid pattern: ${e.message}\n`, code: 2 }; }
+
+        const matchLines = (text, prefix) => {
+          const lines = text.split('\n');
+          const out   = [];
+          for (let i = 0; i < lines.length; i++) {
+            const match = re.test(lines[i]);
+            if (match !== invert) {
+              if (count) { out.push(lines[i]); continue; }
+              const ln = lineNum ? `${i + 1}:` : '';
+              out.push(prefix + ln + lines[i]);
+            }
+          }
+          return out;
+        };
+
         if (files.length === 0) {
-          const lines = stdin.split('\n').filter(l => re.test(l));
-          return { stdout: lines.join('\n') + (lines.length ? '\n' : ''), stderr: '', code: lines.length ? 0 : 1 };
+          const matched = matchLines(stdin, '');
+          const result  = count ? String(matched.length) : matched.join('\n');
+          return { stdout: result + (result ? '\n' : ''), stderr: '', code: matched.length ? 0 : 1 };
         }
-        // TODO: multi-file grep
-        return { stdout: '', stderr: 'grep: file grep not yet implemented\n', code: 1 };
+
+        let allMatched = [];
+        const multiFile = files.length > 1;
+        for (const f of files) {
+          const abs = fs().resolve(cwd(), f);
+          let text = '';
+          try { text = await fs().readFile(abs); }
+          catch (e) { return { stdout: allMatched.join('\n') + (allMatched.length ? '\n' : ''), stderr: `grep: ${f}: ${e.message}\n`, code: 2 }; }
+          const prefix = multiFile ? `${f}:` : '';
+          allMatched = allMatched.concat(matchLines(text, prefix));
+        }
+
+        const result = count ? String(allMatched.length) : allMatched.join('\n');
+        return { stdout: result + (result ? '\n' : ''), stderr: '', code: allMatched.length ? 0 : 1 };
       },
 
       head: ([...args], stdin) => {
