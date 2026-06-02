@@ -4,26 +4,33 @@
   "description": "geckoOS 1.0.0 \"Bijou\" — a browser-based desktop OS with Mac-style UI and GSL",
   "type": "module",
   "scripts": {
-    "dev":       "npx serve . --port 3000 --no-clipboard",
-    "build":     "node tools/build/build.js",
-    "lint":      "npx eslint . --ext .js --ignore-path .eslintignore",
-    "test":      "node --experimental-vm-modules node_modules/.bin/jest",
-    "test:e2e":  "playwright test",
-    "preview":   "npx serve build/dist --port 4000",
-    "cf:dev":    "wrangler pages dev . --port 3000",
+    "dev": "npx serve . --port 3000 --no-clipboard",
+    "build": "node tools/build/build.js",
+    "lint": "npx eslint .",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test:e2e": "playwright test",
+    "preview": "npx serve build/dist --port 4000",
+    "cf:dev": "wrangler pages dev . --port 3000",
     "cf:deploy": "wrangler pages deploy . --project-name=geckoos"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@playwright/test": "^1.44.0",
-    "eslint":           "^9.0.0",
-    "jest":             "^29.0.0",
-    "serve":            "^14.2.0",
-    "wrangler":         "^3.0.0"
+    "eslint": "^9.0.0",
+    "jest": "^29.0.0",
+    "serve": "^14.2.0",
+    "wrangler": "^3.0.0"
   },
   "engines": {
     "node": ">=20.0.0"
   },
-  "keywords": ["webos", "geckoos", "gsl", "browser-os", "desktop"],
+  "keywords": [
+    "webos",
+    "geckoos",
+    "gsl",
+    "browser-os",
+    "desktop"
+  ],
   "license": "MIT",
   "homepage": "https://github.com/geckoos/geckoos"
 }
