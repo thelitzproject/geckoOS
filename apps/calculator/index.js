@@ -1,5 +1,5 @@
 export default class CalculatorApp {
-  #kernel; #win; #display; #expr = ''; #result = '0';
+  #kernel; #win; #display; #expr = ''; #result = '0'; #keyHandler;
 
   constructor(kernel, win) {
     this.#kernel = kernel;

@@ -1,7 +1,7 @@
 export default class CalendarApp {
   #kernel; #win;
   #year; #month;
-  #headerEl;
+  #headerEl; #gridEl;
 
   constructor(kernel, win) {
     this.#kernel = kernel;
