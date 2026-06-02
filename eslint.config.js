@@ -84,6 +84,7 @@ const browserGlobals = {
   Proxy: "readonly",
   Reflect: "readonly",
   globalThis: "readonly",
+  self: "readonly",
 };
 
 export default [
@@ -102,7 +103,7 @@ export default [
   },
   // Service worker files
   {
-    files: ["sw.js", "uv.config.js", "**/sw.js", "**/*.sw.js"],
+    files: ["sw.js", "**/sw.js", "**/*.sw.js"],
     languageOptions: {
       globals: {
         ...browserGlobals,
@@ -117,6 +118,8 @@ export default [
         ActivateEvent: "readonly",
         CacheStorage: "readonly",
         Cache: "readonly",
+        Ultraviolet: "readonly",
+        UVServiceWorker: "readonly",
       },
     },
   },

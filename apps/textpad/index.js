@@ -1,6 +1,8 @@
 /**
- * TextPad — plain text / code editor with syntax highlighting
+ * TextPad — plain text / code editor with line numbers
  */
+import { FilePicker } from '../../ui/components/file-picker.js';
+
 export default class TextPadApp {
   #kernel;
   #win;
@@ -9,31 +11,32 @@ export default class TextPadApp {
   #filePath = null;
   #dirty    = false;
   #statusEl;
+  #picker;
 
   constructor(kernel, win, args) {
     this.#kernel   = kernel;
     this.#win      = win;
     this.#filePath = args?.path ?? null;
+    this.#picker   = new FilePicker(kernel);
     win.setTitle(this.#filePath ? this.#filePath.split('/').pop() : 'Untitled — TextPad');
   }
 
   async mount(container) {
     container.style.cssText = 'display:flex;flex-direction:column;height:100%;';
 
-    // Toolbar
     const toolbar = document.createElement('div');
     toolbar.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 12px;background:var(--color-surface-2);border-bottom:0.5px solid var(--color-separator);flex-shrink:0;font-size:12px;';
 
-    const saveBtn = this._btn('Save', () => this._save());
-    const openBtn = this._btn('Open...', () => this._open());
+    const saveBtn    = this._btn('Save',    () => this._save());
+    const saveAsBtn  = this._btn('Save As…',() => this._saveAs());
+    const openBtn    = this._btn('Open…',   () => this._open());
 
     this.#statusEl = document.createElement('span');
     this.#statusEl.style.cssText = 'margin-left:auto;color:var(--color-text-tertiary);';
 
-    toolbar.append(saveBtn, openBtn, this.#statusEl);
+    toolbar.append(saveBtn, saveAsBtn, openBtn, this.#statusEl);
     this.#win.addToolbar(toolbar);
 
-    // Line numbers + editor
     const wrap = document.createElement('div');
     wrap.style.cssText = 'flex:1;display:flex;overflow:hidden;';
 
@@ -57,7 +60,10 @@ export default class TextPadApp {
     });
 
     this.#editor.addEventListener('keydown', e => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); this._save(); }
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        e.shiftKey ? this._saveAs() : this._save();
+      }
       if (e.key === 'Tab') {
         e.preventDefault();
         const s = this.#editor.selectionStart;
@@ -71,10 +77,12 @@ export default class TextPadApp {
       this.#lineNums.scrollTop = this.#editor.scrollTop;
     });
 
+    this.#editor.addEventListener('click',  () => this._updateStatus());
+    this.#editor.addEventListener('keyup',  () => this._updateStatus());
+
     wrap.append(this.#lineNums, this.#editor);
     container.appendChild(wrap);
 
-    // Load file if provided
     if (this.#filePath) {
       await this._loadFile(this.#filePath);
     } else {
@@ -106,11 +114,7 @@ export default class TextPadApp {
   }
 
   async _save() {
-    if (!this.#filePath) {
-      const p = prompt('Save as:', '/home/user/untitled.txt');
-      if (!p) return;
-      this.#filePath = p;
-    }
+    if (!this.#filePath) { await this._saveAs(); return; }
     try {
       await this.#kernel.gsl.fs.writeFile(this.#filePath, this.#editor.value, { recursive: true });
       this.#dirty = false;
@@ -121,9 +125,20 @@ export default class TextPadApp {
     }
   }
 
+  async _saveAs() {
+    const fname = this.#filePath?.split('/').pop() ?? 'untitled.txt';
+    const startDir = this.#filePath
+      ? this.#filePath.split('/').slice(0, -1).join('/') || '/home/user'
+      : '/home/user';
+    const path = await this.#picker.open({ mode: 'save', filename: fname, startDir });
+    if (!path) return;
+    this.#filePath = path;
+    await this._save();
+  }
+
   async _open() {
-    const p = prompt('File path:', '/home/user/');
-    if (p) await this._loadFile(p);
+    const path = await this.#picker.open({ mode: 'open', startDir: '/home/user' });
+    if (path) await this._loadFile(path);
   }
 
   _updateTitle() {
