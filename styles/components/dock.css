@@ -110,3 +110,9 @@
 .dock-icon.bouncing {
   animation: dock-bounce 800ms ease;
 }
+
+.dock-icon.drag-over {
+  transform: scale(1.4) translateY(-8px);
+  background: rgba(255,255,255,0.15);
+  border-radius: 14px;
+}
