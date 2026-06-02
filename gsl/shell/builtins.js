@@ -299,7 +299,7 @@ export class Builtins {
           'GSL (Gecko Subsystem for Linux) — available commands:',
           '',
           '  File system:  ls, cd, pwd, cat, mkdir, rm, mv, cp, touch',
-          '  Text:         echo, grep, head, tail, wc, sort, uniq, tr',
+          '  Text:         echo, grep [-invce] [pattern] [files], head, tail, wc, sort, uniq, tr',
           '  System:       ps, kill, date, whoami, hostname, uname, clear',
           '  Environment:  export, env, printenv',
           '  Packages:     apt install <pkg>, apt remove <pkg>, apt list',
