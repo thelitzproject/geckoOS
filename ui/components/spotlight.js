@@ -152,11 +152,14 @@ export class Spotlight {
     this.#results.appendChild(el);
   }
 
-  _addResult({ icon, name, desc, action }) {
+  _addResult({ icon, emoji, name, desc, action }) {
     const el = document.createElement('div');
     el.className = 'spotlight-result';
+    const iconHtml = emoji
+      ? `<span style="font-size:20px;width:28px;text-align:center;flex-shrink:0;">${emoji}</span>`
+      : `<img src="${icon}" alt="" />`;
     el.innerHTML = `
-      <img src="${icon}" alt="" />
+      ${iconHtml}
       <div class="spotlight-result-info">
         <div class="spotlight-result-name">${name}</div>
         <div class="spotlight-result-desc">${desc}</div>
