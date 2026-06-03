@@ -36,9 +36,13 @@ console.log('│  geckoOS — browser.js setup             │');
 console.log('└─────────────────────────────────────────┘\n');
 
 // Check dependencies
-if (!check('git',   'git'))   process.exit(1);
-if (!check('pnpm',  'pnpm'))  { console.log('  Install pnpm: npm i -g pnpm'); process.exit(1); }
-if (!check('cargo', 'Rust'))  { console.log('  Install Rust: https://rustup.rs'); process.exit(1); }
+if (!check('git',       'git'))       process.exit(1);
+if (!check('pnpm',      'pnpm'))      { console.log('  Install pnpm: npm i -g pnpm'); process.exit(1); }
+if (!check('cargo',     'Rust'))      { console.log('  Install Rust: https://rustup.rs'); process.exit(1); }
+if (!check('wasm-pack', 'wasm-pack')) {
+  console.log('  Install wasm-pack: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh');
+  process.exit(1);
+}
 
 // Already built?
 if (existsSync(DIST)) {
@@ -66,7 +70,15 @@ if (!existsSync(dreamland)) {
 // Install dependencies
 run('pnpm install', VENDOR);
 
-// Build
+// Build scramjet WASM first (required by the main rspack build)
+const scramjetCore = join(VENDOR, 'packages', 'scramjet', 'packages', 'core');
+if (existsSync(scramjetCore)) {
+  run('pnpm run rewriter:build', scramjetCore);
+} else {
+  console.warn('  scramjet/core not found — skipping WASM build');
+}
+
+// Main build
 run('pnpm run build', VENDOR);
 
 // Verify
