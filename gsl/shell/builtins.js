@@ -183,7 +183,7 @@ export class Builtins {
       uname: ([...args]) => {
         const all = args.includes('-a');
         return { stdout: all
-          ? 'GeckoOS gecko 1.0.0-bijou #1 SMP ' + new Date().toDateString() + ' x86_64 GSL\n'
+          ? 'GeckoOS gecko 1.0.0-bijou-bb2 #1 SMP ' + new Date().toDateString() + ' x86_64 GSL/1.10.0\n'
           : 'GeckoOS\n', stderr: '', code: 0 };
       },
 

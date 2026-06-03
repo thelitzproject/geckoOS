@@ -178,9 +178,101 @@ class GeckoWindow {
   }
 
   _bindDrag() {
+    // Snap ghost — shows a preview of where the window will snap
+    let snapGhost = null;
+
+    const getSnapZone = (x, y) => {
+      const s   = document.getElementById('desktop-surface');
+      const W   = s.clientWidth;
+      const H   = s.clientHeight;
+      const MBH = 28;
+      const EDGE = 24;
+      if (y <= MBH + EDGE)         return 'maximize';
+      if (x <= EDGE && y <= H / 2) return 'top-left';
+      if (x <= EDGE && y >  H / 2) return 'bottom-left';
+      if (x >= W - EDGE && y <= H / 2) return 'top-right';
+      if (x >= W - EDGE && y >  H / 2) return 'bottom-right';
+      if (x <= EDGE)                return 'left';
+      if (x >= W - EDGE)            return 'right';
+      return null;
+    };
+
+    const showGhost = zone => {
+      if (!zone) { hideGhost(); return; }
+      if (!snapGhost) {
+        snapGhost = document.createElement('div');
+        snapGhost.style.cssText = [
+          'position:fixed', 'z-index:9998', 'pointer-events:none',
+          'background:rgba(0,122,255,0.18)', 'border:2px solid rgba(0,122,255,0.45)',
+          'border-radius:10px', 'transition:all 80ms ease',
+        ].join(';');
+        document.body.appendChild(snapGhost);
+      }
+      const s   = document.getElementById('desktop-surface');
+      const W   = s.clientWidth;
+      const H   = s.clientHeight;
+      const MBH = 28;
+      const DH  = 80;
+      const UH  = H - MBH - DH;
+      const rects = {
+        'maximize':     { l:0,      t:MBH,        w:W,   h:UH   },
+        'left':         { l:0,      t:MBH,        w:W/2, h:UH   },
+        'right':        { l:W/2,    t:MBH,        w:W/2, h:UH   },
+        'top-left':     { l:0,      t:MBH,        w:W/2, h:UH/2 },
+        'top-right':    { l:W/2,    t:MBH,        w:W/2, h:UH/2 },
+        'bottom-left':  { l:0,      t:MBH+UH/2,   w:W/2, h:UH/2 },
+        'bottom-right': { l:W/2,    t:MBH+UH/2,   w:W/2, h:UH/2 },
+      };
+      const r = rects[zone];
+      snapGhost.style.left   = `${r.l}px`;
+      snapGhost.style.top    = `${r.t}px`;
+      snapGhost.style.width  = `${r.w}px`;
+      snapGhost.style.height = `${r.h}px`;
+    };
+
+    const hideGhost = () => { snapGhost?.remove(); snapGhost = null; };
+
+    const applySnap = zone => {
+      if (!zone) return;
+      const s   = document.getElementById('desktop-surface');
+      const W   = s.clientWidth;
+      const H   = s.clientHeight;
+      const MBH = 28;
+      const DH  = 80;
+      const UH  = H - MBH - DH;
+      const snaps = {
+        'maximize':     { x:0,    y:MBH,       w:W,   h:UH   },
+        'left':         { x:0,    y:MBH,       w:W/2, h:UH   },
+        'right':        { x:W/2,  y:MBH,       w:W/2, h:UH   },
+        'top-left':     { x:0,    y:MBH,       w:W/2, h:UH/2 },
+        'top-right':    { x:W/2,  y:MBH,       w:W/2, h:UH/2 },
+        'bottom-left':  { x:0,    y:MBH+UH/2,  w:W/2, h:UH/2 },
+        'bottom-right': { x:W/2,  y:MBH+UH/2,  w:W/2, h:UH/2 },
+      };
+      const s2 = snaps[zone];
+      this.el.style.transition = 'left 120ms ease, top 120ms ease, width 120ms ease, height 120ms ease';
+      this.el.style.left   = `${s2.x}px`;
+      this.el.style.top    = `${s2.y}px`;
+      this.el.style.width  = `${s2.w}px`;
+      this.el.style.height = `${s2.h}px`;
+      this.width = s2.w; this.height = s2.h;
+      setTimeout(() => { this.el.style.transition = ''; }, 150);
+      this._isMaximized = (zone === 'maximize');
+    };
+
     this.titlebar.addEventListener('mousedown', e => {
       if (e.target.closest('.window-controls')) return;
       if (e.button !== 0) return;
+
+      // Un-maximize if currently maximized
+      if (this._isMaximized) {
+        const r = this._prevRect ?? { x: 200, y: 80, w: this.width, h: this.height };
+        this.el.style.left   = `${r.x}px`;
+        this.el.style.top    = `${r.y}px`;
+        this.el.style.width  = `${r.w}px`;
+        this.el.style.height = `${r.h}px`;
+        this._isMaximized = false;
+      }
 
       this.#isDragging = true;
       this.titlebar.classList.add('dragging');
@@ -189,23 +281,48 @@ class GeckoWindow {
       this.#dragOffX = e.clientX - rect.left;
       this.#dragOffY = e.clientY - rect.top;
 
+      let currentZone = null;
+
       const onMove = ev => {
         if (!this.#isDragging) return;
         const x = ev.clientX - this.#dragOffX;
-        const y = Math.max(28, ev.clientY - this.#dragOffY); // Can't go above menubar
+        const y = Math.max(28, ev.clientY - this.#dragOffY);
         this.el.style.left = `${x}px`;
         this.el.style.top  = `${y}px`;
+
+        const zone = getSnapZone(ev.clientX, ev.clientY);
+        if (zone !== currentZone) { currentZone = zone; showGhost(zone); }
       };
 
-      const onUp = () => {
+      const onUp = ev => {
         this.#isDragging = false;
         this.titlebar.classList.remove('dragging');
+        hideGhost();
+        const zone = getSnapZone(ev.clientX, ev.clientY);
+        if (zone) {
+          this._prevRect = { x: this.el.offsetLeft, y: this.el.offsetTop, w: this.el.offsetWidth, h: this.el.offsetHeight };
+          applySnap(zone);
+        }
         window.removeEventListener('mousemove', onMove);
         window.removeEventListener('mouseup', onUp);
       };
 
       window.addEventListener('mousemove', onMove);
       window.addEventListener('mouseup', onUp);
+    });
+
+    // Keyboard snap: Ctrl+Alt+Arrow
+    document.addEventListener('keydown', e => {
+      if (!this.el.classList.contains('focused')) return;
+      if (!(e.ctrlKey && e.altKey)) return;
+      const map = { ArrowLeft:'left', ArrowRight:'right', ArrowUp:'maximize' };
+      const zone = map[e.key];
+      if (!zone) return;
+      e.preventDefault();
+      if (!this._isMaximized || zone !== 'maximize') {
+        this._prevRect = { x: this.el.offsetLeft, y: this.el.offsetTop, w: this.el.offsetWidth, h: this.el.offsetHeight };
+      }
+      applySnap(zone);
     });
   }
 

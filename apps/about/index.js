@@ -38,7 +38,7 @@ export default class AboutApp {
     badge.style.cssText = 'display:flex;align-items:center;gap:8px;';
     badge.innerHTML = `
       <span style="font-size:13px;color:var(--color-text-secondary);">Version 1.0.0 "Bijou"</span>
-      <span style="font-size:11px;padding:1px 7px;background:var(--color-accent);color:#fff;border-radius:10px;font-weight:600;">RELEASE</span>`;
+      <span style="font-size:11px;padding:1px 7px;background:var(--color-accent);color:#fff;border-radius:10px;font-weight:600;">BETA BUILD 2</span>`;
 
     hero.append(logo, name, badge);
 
@@ -109,7 +109,7 @@ export default class AboutApp {
     const online = navigator.onLine ? 'Connected' : 'Offline';
 
     const rows = [
-      { label: 'geckoOS',         value: '1.0.0 "Bijou"' },
+      { label: 'geckoOS',         value: '1.0.0 "Bijou" (Beta Build 2)' },
       { label: 'GSL',             value: `v${this.#kernel.gsl?.version ?? '?'} (Gecko Subsystem for Linux)` },
       { label: 'Kernel',          value: 'geckok 1.00' },
       { label: 'Shell',           value: 'gsh 1.0' },
@@ -136,7 +136,7 @@ export default class AboutApp {
       <span style="font-size:24px">✅</span>
       <div>
         <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">geckoOS is up to date</div>
-        <div style="font-size:12px;color:var(--color-text-secondary)">geckoOS 1.0.0 is the latest release.</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">geckoOS 1.0.0 Beta Build 2 is the latest release.</div>
       </div>`;
     el.appendChild(updateBox);
   }
@@ -160,7 +160,7 @@ export default class AboutApp {
       { separator: true },
       { label: 'Filesystem',      value: 'geckoVFS (IndexedDB-backed, POSIX)' },
       { label: 'Shell',           value: 'gsh — bash-compatible interpreter' },
-      { label: 'Shell builtins',  value: '30+ commands (ls, cat, grep, apt…)' },
+      { label: 'Shell builtins',  value: '33+ commands (ls, cat, grep, apt…)' },
       { label: 'Network',         value: 'geckoNet (fetch-based curl/wget)' },
       { label: 'Syscall table',   value: 'POSIX-compatible (open/read/write/stat…)' },
       { separator: true },
