@@ -352,9 +352,15 @@ export default class SettingsApp {
 
     this._subh('Wallpaper');
     const wallpapers = [
-      { label: 'Default', url: 'assets/wallpapers/default.jpg' },
-      { label: 'Dark',    url: 'assets/wallpapers/dark.jpg' },
-      { label: 'Minimal', url: 'assets/wallpapers/minimal.jpg' },
+      { label: 'Default',  url: 'assets/wallpapers/default.jpg',  preview: 'url(assets/wallpapers/default.jpg) center/cover' },
+      { label: 'Dark',     url: 'assets/wallpapers/dark.jpg',      preview: 'url(assets/wallpapers/dark.jpg) center/cover' },
+      { label: 'Minimal',  url: 'assets/wallpapers/minimal.jpg',   preview: 'url(assets/wallpapers/minimal.jpg) center/cover' },
+      { label: 'Sunset',   url: 'gradient:linear-gradient(135deg,#1a0a2e 0%,#4a1628 50%,#8b3010 100%)', preview: 'linear-gradient(135deg,#1a0a2e 0%,#4a1628 50%,#8b3010 100%)' },
+      { label: 'Ocean',    url: 'gradient:linear-gradient(135deg,#0d1b4b 0%,#0a4080 50%,#0077b6 100%)', preview: 'linear-gradient(135deg,#0d1b4b 0%,#0a4080 50%,#0077b6 100%)' },
+      { label: 'Forest',   url: 'gradient:linear-gradient(135deg,#0d2b0d 0%,#1a4a1a 50%,#2d7a2d 100%)', preview: 'linear-gradient(135deg,#0d2b0d 0%,#1a4a1a 50%,#2d7a2d 100%)' },
+      { label: 'Aurora',   url: 'gradient:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%)',  preview: 'linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%)' },
+      { label: 'Rose',     url: 'gradient:linear-gradient(135deg,#2c0a1e 0%,#6d1d4e 50%,#c2185b 100%)', preview: 'linear-gradient(135deg,#2c0a1e 0%,#6d1d4e 50%,#c2185b 100%)' },
+      { label: 'Dusk',     url: 'gradient:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)',  preview: 'linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)' },
     ];
     const grid = document.createElement('div');
     grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;';
@@ -362,7 +368,7 @@ export default class SettingsApp {
       const thumb = document.createElement('div');
       thumb.className = 'wp-thumb';
       const currentWp = this.#kernel.settings.get('desktop.wallpaper', '');
-      thumb.style.cssText = `height:80px;border-radius:10px;background:url(${w.url}) center/cover,var(--color-surface-2);cursor:pointer;border:2.5px solid ${currentWp === w.url ? 'var(--color-accent)' : 'transparent'};transition:border-color 100ms;`;
+      thumb.style.cssText = `height:80px;border-radius:10px;background:${w.preview},var(--color-surface-2);cursor:pointer;border:2.5px solid ${currentWp === w.url ? 'var(--color-accent)' : 'transparent'};transition:border-color 100ms;`;
       thumb.addEventListener('click', () => {
         this.#kernel.desktop.setWallpaper(w.url);
         document.querySelectorAll('.wp-thumb').forEach(t => t.style.borderColor = 'transparent');
