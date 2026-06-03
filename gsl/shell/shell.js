@@ -138,27 +138,41 @@ export class ShellSession {
   async _execBinary(path, args, stdin) {
     try {
       const src = await this.#gsl.fs.readFile(path);
-      // Script shebang handling
+
       if (src.startsWith('#!/')) {
         const firstLine = src.split('\n')[0];
-        const interp = firstLine.slice(2).trim().split(' ');
-        return this._runCommand({
-          name: interp[0],
-          args: [...interp.slice(1), path, ...args],
-        }, stdin);
+        const interp = firstLine.slice(2).trim();
+        // Shell scripts — run body directly in this session instead of
+        // re-routing through _runCommand with a non-existent /bin/gsh binary
+        if (/\/(g?sh|bash|dash|ash|zsh)(\s|$)/.test(interp)) {
+          return this._execShellScript(src, args, stdin);
+        }
+        const interpParts = interp.split(/\s+/);
+        return this._runCommand({ name: interpParts[0], args: [...interpParts.slice(1), path, ...args] }, stdin);
       }
-      // Treat as shell script
-      const lines = src.split('\n');
-      let out = '';
-      for (const line of lines) {
-        const r = await this.exec(line, { stdin });
-        out += r.stdout;
-        if (r.code !== 0) return { stdout: out, stderr: r.stderr, code: r.code };
-      }
-      return { stdout: out, stderr: '', code: 0 };
+
+      return this._execShellScript(src, args, stdin);
     } catch (e) {
       return { stdout: '', stderr: `${path}: ${e.message}\n`, code: 1 };
     }
+  }
+
+  async _execShellScript(src, scriptArgs, stdin) {
+    const savedEnv = { ...this.env };
+    scriptArgs.forEach((a, i) => { this.env[String(i + 1)] = a; });
+
+    const lines = src.split('\n');
+    let out = '';
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const r = await this.exec(trimmed, { stdin });
+      out += r.stdout;
+      if (r.code !== 0) { this.env = savedEnv; return { stdout: out, stderr: r.stderr, code: r.code }; }
+    }
+
+    this.env = savedEnv;
+    return { stdout: out, stderr: '', code: 0 };
   }
 
   _expandVars(str) {

@@ -18,7 +18,7 @@ import { SyscallTable }   from '../syscalls/syscalls.js';
 import { NetworkLayer }   from '../net/network.js';
 import { PackageManager } from '../packages/apt.js';
 
-const GSL_VERSION = '1.0.0';
+const GSL_VERSION = '1.10.0';
 
 export class GSL {
   #kernel;
@@ -71,14 +71,36 @@ export class GSL {
    */
   async _provisionRootFS() {
     const alreadyProvisioned = await this.fs.exists('/etc/gecko-release');
-    if (alreadyProvisioned) return;
+    if (alreadyProvisioned) {
+      // Refresh version-stamped files on every boot so upgrades are reflected
+      await this.fs.writeFile('/etc/gecko-release',
+        `GECKO_NAME="geckoOS"\nGECKO_VERSION="1.0.0"\nGECKO_CODENAME="Bijou"\nGECKO_BUILD="bb2"\nGSL_VERSION="${GSL_VERSION}"\n`
+      );
+      await this.fs.writeFile('/etc/motd',
+        `Welcome to geckoOS 1.0.0 "Bijou" (Beta Build 2)\nGSL v${GSL_VERSION} — Gecko Subsystem for Linux\nType 'help' for available commands.\n`
+      );
+      // Ensure user home subdirs exist for users who provisioned before bb2
+      const userDirs = [
+        '/home/user/Desktop', '/home/user/Documents', '/home/user/Downloads',
+        '/home/user/Pictures', '/home/user/Music', '/home/user/Videos',
+        '/home/user/.config', '/home/user/.local', '/home/user/.local/share',
+      ];
+      for (const dir of userDirs) {
+        if (!(await this.fs.exists(dir))) await this.fs.mkdir(dir, { recursive: true });
+      }
+      return;
+    }
 
     console.log('[GSL] Provisioning root filesystem...');
 
     const dirs = [
       '/bin', '/sbin', '/usr', '/usr/bin', '/usr/lib', '/usr/local', '/usr/local/bin',
+      '/usr/share', '/usr/share/man', '/usr/share/man/man1',
       '/etc', '/etc/apt', '/etc/apt/sources.list.d',
       '/home', '/home/user',
+      '/home/user/Desktop', '/home/user/Documents', '/home/user/Downloads',
+      '/home/user/Pictures', '/home/user/Music', '/home/user/Videos',
+      '/home/user/.config', '/home/user/.local', '/home/user/.local/share',
       '/tmp', '/var', '/var/log', '/var/cache', '/var/cache/apt',
       '/proc', '/sys', '/dev',
       '/lib', '/lib64',
@@ -91,7 +113,7 @@ export class GSL {
     }
 
     await this.fs.writeFile('/etc/gecko-release',
-      `GECKO_NAME="geckoOS"\nGECKO_VERSION="1.0.0"\nGECKO_CODENAME="Bijou"\nGSL_VERSION="${GSL_VERSION}"\n`
+      `GECKO_NAME="geckoOS"\nGECKO_VERSION="1.0.0"\nGECKO_CODENAME="Bijou"\nGECKO_BUILD="bb2"\nGSL_VERSION="${GSL_VERSION}"\n`
     );
 
     await this.fs.writeFile('/etc/hostname', 'gecko\n');
@@ -110,7 +132,7 @@ export class GSL {
     );
 
     await this.fs.writeFile('/etc/motd',
-      `Welcome to geckoOS 1.0.0 "Bijou"\nGSL v${GSL_VERSION} — Gecko Subsystem for Linux\nType 'help' for available commands.\n`
+      `Welcome to geckoOS 1.0.0 "Bijou" (Beta Build 2)\nGSL v${GSL_VERSION} — Gecko Subsystem for Linux\nType 'help' for available commands.\n`
     );
 
     console.log('[GSL] Root filesystem provisioned');
