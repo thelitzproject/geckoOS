@@ -36,13 +36,13 @@ console.log('│  geckoOS — browser.js setup             │');
 console.log('└─────────────────────────────────────────┘\n');
 
 // Check dependencies
-if (!check('git',       'git'))       process.exit(1);
-if (!check('pnpm',      'pnpm'))      { console.log('  Install pnpm: npm i -g pnpm'); process.exit(1); }
-if (!check('cargo',     'Rust'))      { console.log('  Install Rust: https://rustup.rs'); process.exit(1); }
-if (!check('wasm-pack', 'wasm-pack')) {
-  console.log('  Install wasm-pack: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh');
-  process.exit(1);
-}
+if (!check('git',           'git'))          process.exit(1);
+if (!check('pnpm',          'pnpm'))         { console.log('  Install pnpm:         npm i -g pnpm'); process.exit(1); }
+if (!check('cargo',         'Rust/cargo'))   { console.log('  Install Rust:         https://rustup.rs'); process.exit(1); }
+if (!check('wasm-pack',     'wasm-pack'))    { console.log('  Install wasm-pack:    curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh'); process.exit(1); }
+if (!check('wasm-opt',      'wasm-opt'))     { console.log('  Install binaryen:     https://github.com/WebAssembly/binaryen/releases  (or: brew install binaryen)'); process.exit(1); }
+if (!check('wasm-bindgen',  'wasm-bindgen')) { console.log('  Install:              cargo install wasm-bindgen-cli'); process.exit(1); }
+if (!check('wasm-snip',     'wasm-snip'))    { console.log('  Install (r58playz fork): cargo install --git https://github.com/r58playz/wasm-snip wasm-snip'); process.exit(1); }
 
 // Already built?
 if (existsSync(DIST)) {

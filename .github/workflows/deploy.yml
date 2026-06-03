@@ -30,7 +30,7 @@ jobs:
           cache: 'npm'
 
       # ── browser.js — restore built dist from cache ────────────────────────
-      # Bump .github/browser-js-pin to force a full rebuild on next deploy.
+      # Bump .github/browser-js-pin to force a full rebuild on the next deploy.
       - name: Restore browser.js dist cache
         id: cache-browser
         uses: actions/cache@v4
@@ -38,7 +38,8 @@ jobs:
           path: vendor/browser.js/packages/chrome/dist
           key: browser-js-${{ hashFiles('.github/browser-js-pin') }}
 
-      # Toolchains — only installed on cache miss
+      # ── Toolchains (skipped when dist cache hits) ─────────────────────────
+
       - name: Set up pnpm
         if: steps.cache-browser.outputs.cache-hit != 'true'
         uses: pnpm/action-setup@v4
@@ -51,11 +52,9 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: Install wasm-pack
-        if: steps.cache-browser.outputs.cache-hit != 'true'
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-
-      - name: Restore Cargo registry cache
+      # Cache Cargo registry AND compiled CLI binaries together.
+      # Key is pinned to browser-js-pin so tools rebuild when we bump it.
+      - name: Restore Cargo cache
         if: steps.cache-browser.outputs.cache-hit != 'true'
         uses: actions/cache@v4
         with:
@@ -63,8 +62,31 @@ jobs:
             ~/.cargo/registry/index
             ~/.cargo/registry/cache
             ~/.cargo/git/db
-          key: cargo-${{ runner.os }}-${{ hashFiles('.github/browser-js-pin') }}
-          restore-keys: cargo-${{ runner.os }}-
+            ~/.cargo/bin/wasm-bindgen
+            ~/.cargo/bin/wasm-snip
+          key: cargo-tools-${{ runner.os }}-${{ hashFiles('.github/browser-js-pin') }}
+          restore-keys: cargo-tools-${{ runner.os }}-
+
+      - name: Install WASM build tools
+        if: steps.cache-browser.outputs.cache-hit != 'true'
+        run: |
+          # wasm-opt comes from the binaryen apt package
+          sudo apt-get update -q && sudo apt-get install -y binaryen
+
+          # wasm-bindgen CLI — only install if not already in cache
+          if ! command -v wasm-bindgen &>/dev/null; then
+            cargo install wasm-bindgen-cli
+          fi
+
+          # wasm-snip — r58playz fork required by scramjet's build.sh
+          if ! command -v wasm-snip &>/dev/null; then
+            cargo install --git https://github.com/r58playz/wasm-snip wasm-snip
+          fi
+
+          # wasm-pack
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      # ── browser.js clone + build ──────────────────────────────────────────
 
       - name: Clone browser.js
         if: steps.cache-browser.outputs.cache-hit != 'true'
@@ -76,7 +98,7 @@ jobs:
         if: steps.cache-browser.outputs.cache-hit != 'true'
         working-directory: vendor/browser.js
         run: |
-          # Allow esbuild + core-js post-install scripts (native binaries needed in CI)
+          # Approve native post-install scripts needed in CI
           printf '\nonlyBuiltDependencies:\n  - esbuild\n  - core-js\n  - bufferutil\n' >> pnpm-workspace.yaml
           pnpm install --frozen-lockfile
 
@@ -91,6 +113,7 @@ jobs:
         run: pnpm run build
 
       # ── geckoOS build ─────────────────────────────────────────────────────
+
       - name: Install geckoOS dependencies
         run: npm ci
 
@@ -98,6 +121,7 @@ jobs:
         run: npm run build
 
       # ── Deploy ────────────────────────────────────────────────────────────
+
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
