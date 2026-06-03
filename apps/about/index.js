@@ -111,8 +111,6 @@ export default class AboutApp {
     const rows = [
       { label: 'geckoOS',         value: '1.0.0 "Bijou" (Beta Build 2)' },
       { label: 'GSL',             value: `v${this.#kernel.gsl?.version ?? '?'} (Gecko Subsystem for Linux)` },
-      { label: 'Kernel',          value: 'geckok 1.00' },
-      { label: 'Shell',           value: 'gsh 1.0' },
       { separator: true },
       { label: 'Browser Engine',  value: this._detectEngine(ua) },
       { label: 'Platform',        value: this._detectPlatform(ua) },
@@ -122,9 +120,7 @@ export default class AboutApp {
       { label: 'Device Memory',   value: mem },
       { label: 'Network',         value: online },
       { separator: true },
-      { label: 'Window Manager',  value: 'geckodesk 1.00' },
-      { label: 'Compositor',      value: 'geckoUI 1.01' },
-      { label: 'Package Manager', value: 'apt for geckoOS' },
+      { label: 'Package Manager', value: 'APT for geckoOS' },
     ];
 
     el.appendChild(this._table(rows));
