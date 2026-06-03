@@ -72,7 +72,15 @@ export class Settings {
 
     const wallpaper = this.get('desktop.wallpaper');
     const surface = document.getElementById('desktop-surface');
-    if (surface) surface.style.backgroundImage = `url(${wallpaper})`;
+    // Gradient themes override the wallpaper with their own CSS variable
+    const gradientThemes = ['sunset'];
+    if (surface) {
+      if (gradientThemes.includes(theme)) {
+        surface.style.backgroundImage = 'var(--color-desktop-bg)';
+      } else {
+        surface.style.backgroundImage = wallpaper ? `url(${wallpaper})` : '';
+      }
+    }
 
     if (this.get('accessibility.reduceMotion')) {
       root.style.setProperty('--transition-spring', '0ms');
