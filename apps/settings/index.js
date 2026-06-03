@@ -302,7 +302,7 @@ export default class SettingsApp {
 
     this._subh('Theme');
     const themeCard = this._card();
-    this._row(themeCard, 'Theme', this._select('appearance.theme', [['light','Light'],['dark','Dark']]));
+    this._row(themeCard, 'Theme', this._select('appearance.theme', [['light','Light'],['dark','Dark'],['sunset','Sunset']]));
 
     const colorPicker = document.createElement('input');
     colorPicker.type = 'color';

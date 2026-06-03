@@ -51,6 +51,32 @@
   --color-separator:       rgba(255,255,255,0.06);
 }
 
+[data-theme="sunset"] {
+  --color-accent:          #ff6b35;
+  --color-desktop-bg:      linear-gradient(135deg, #1a0a2e 0%, #2d1438 30%, #4a1628 60%, #6b2018 85%, #8b3010 100%);
+  --color-menubar-bg:      rgba(35,12,42,0.85);
+  --color-menubar-text:    rgba(255,218,168,0.95);
+  --color-menubar-border:  rgba(255,140,60,0.18);
+  --color-menubar-hover:   rgba(255,140,60,0.14);
+  --color-dock-bg:         rgba(55,18,48,0.78);
+  --color-dock-border:     rgba(255,130,60,0.28);
+  --color-window-bg:       rgba(30,12,34,0.96);
+  --color-window-titlebar: rgba(42,16,44,0.96);
+  --color-window-border:   rgba(255,130,60,0.18);
+  --color-window-text:     #ffe4c0;
+  --color-sidebar-bg:      rgba(40,14,40,0.65);
+  --color-sidebar-text:    #ffd090;
+  --color-sidebar-hover:   rgba(255,130,60,0.09);
+  --color-text-primary:    #ffe8cc;
+  --color-text-secondary:  #c0865a;
+  --color-text-tertiary:   #7a4f35;
+  --color-surface-1:       #2a1030;
+  --color-surface-2:       #3a1a3c;
+  --color-surface-3:       #4c2448;
+  --color-border:          rgba(255,130,60,0.13);
+  --color-separator:       rgba(255,130,60,0.08);
+}
+
 /* Desktop surface */
 #desktop-surface {
   position: absolute;
