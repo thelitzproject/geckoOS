@@ -45,6 +45,17 @@ async function build() {
     }
   }
 
+  // Copy browser.js dist if it has been built
+  const browserDist = path.join(ROOT, 'vendor/browser.js/packages/chrome/dist');
+  const browserDst  = path.join(DIST, 'vendor/browser.js/packages/chrome/dist');
+  try {
+    await fs.access(browserDist);
+    await fs.cp(browserDist, browserDst, { recursive: true });
+    console.log('  ✓ vendor/browser.js/packages/chrome/dist/');
+  } catch {
+    console.warn('  - vendor/browser.js/ (not built, browser will show setup guide)');
+  }
+
   // Write build metadata
   const meta = {
     version:   '1.0.0',
