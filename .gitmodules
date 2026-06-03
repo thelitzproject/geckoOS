@@ -1,0 +1,7 @@
+[submodule "vendor/litzium"]
+	path = vendor/litzium
+	url = https://github.com/thelitzproject/litzium
+
+[submodule "vendor/aboutproxy"]
+	path = vendor/aboutproxy
+	url = https://github.com/thelitzproject/aboutproxy

@@ -23,6 +23,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false   # vendor/litzium and vendor/aboutproxy not needed for the build
 
       - uses: actions/setup-node@v4
         with:
