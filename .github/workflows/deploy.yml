@@ -20,6 +20,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -28,10 +29,57 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - run: npm ci
+      # ── browser.js — restore built dist from cache ────────────────────────
+      # Cache key is pinned to .github/browser-js-pin. Bump that file to
+      # force a full rebuild of browser.js on the next deploy.
+      - name: Restore browser.js dist cache
+        id: cache-browser
+        uses: actions/cache@v4
+        with:
+          path: vendor/browser.js/packages/chrome/dist
+          key: browser-js-${{ hashFiles('.github/browser-js-pin') }}
 
-      - run: npm run build
+      # Only install toolchains + clone + build when cache misses
+      - name: Set up pnpm
+        if: steps.cache-browser.outputs.cache-hit != 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
+      - name: Set up Rust (stable + wasm32 target)
+        if: steps.cache-browser.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Restore Cargo registry cache
+        if: steps.cache-browser.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+          key: cargo-${{ runner.os }}-${{ hashFiles('.github/browser-js-pin') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Clone & build browser.js
+        if: steps.cache-browser.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth=1 https://github.com/thelitzproject/browser.js vendor/browser.js
+          git clone --depth=1 https://github.com/MercuryWorkshop/dreamlandjs vendor/browser.js/external/dreamlandjs
+          cd vendor/browser.js
+          pnpm install --frozen-lockfile
+          pnpm run build
+
+      # ── geckoOS build ─────────────────────────────────────────────────────
+      - name: Install geckoOS dependencies
+        run: npm ci
+
+      - name: Build geckoOS
+        run: npm run build
+
+      # ── Deploy ────────────────────────────────────────────────────────────
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3

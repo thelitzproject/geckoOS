@@ -11,7 +11,9 @@
     "test:e2e": "playwright test",
     "preview": "npx serve build/dist --port 4000",
     "cf:dev": "wrangler pages dev . --port 3000",
-    "cf:deploy": "wrangler pages deploy . --project-name=geckoos"
+    "cf:deploy": "wrangler pages deploy . --project-name=geckoos",
+    "setup:browser": "node tools/setup-browser.js",
+    "build:vendor": "node tools/setup-browser.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
