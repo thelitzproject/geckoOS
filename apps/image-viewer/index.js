@@ -2,6 +2,8 @@ export default class ImageViewerApp {
   #kernel; #win;
   #filePath;
   #imgEl;
+  #zoomLabel;
+  #filenameEl;
   #zoom = 1;
   #panX = 0; #panY = 0;
   #dragging = false;
