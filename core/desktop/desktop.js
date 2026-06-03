@@ -25,12 +25,30 @@ export class Desktop {
   }
 
   _defaults() {
-    return [
-      { id: 'di-finder',   type: 'app', appId: 'finder',   name: 'Finder',   x: 20, y: 20  },
-      { id: 'di-terminal', type: 'app', appId: 'terminal', name: 'Terminal', x: 20, y: 120 },
-      { id: 'di-textpad',  type: 'app', appId: 'textpad',  name: 'TextPad',  x: 20, y: 220 },
-      { id: 'di-settings', type: 'app', appId: 'settings', name: 'Settings', x: 20, y: 320 },
+    // Column layout: 2 columns of icons on the right side of the desktop
+    const apps = [
+      { appId: 'finder',       name: 'Finder'        },
+      { appId: 'terminal',     name: 'Terminal'      },
+      { appId: 'textpad',      name: 'TextPad'       },
+      { appId: 'settings',     name: 'System Settings' },
+      { appId: 'browser',      name: 'Browser'       },
+      { appId: 'calculator',   name: 'Calculator'    },
+      { appId: 'calendar',     name: 'Calendar'      },
+      { appId: 'image-viewer', name: 'Image Viewer'  },
+      { appId: 'app-store',    name: 'App Store'     },
+      { appId: 'snake',        name: 'Snake'         },
+      { appId: 'minesweeper',  name: 'Minesweeper'   },
+      { appId: 'breakout',     name: 'Breakout'      },
+      { appId: 'about',        name: 'About geckoOS' },
     ];
+    return apps.map((app, i) => ({
+      id:    `di-${app.appId}`,
+      type:  'app',
+      appId: app.appId,
+      name:  app.name,
+      x: 20 + Math.floor(i / 7) * 90,
+      y: 20 + (i % 7) * 100,
+    }));
   }
 
   _save() {
