@@ -18,7 +18,20 @@ export class Desktop {
   _load() {
     try {
       const raw = localStorage.getItem('geckoOS.desktop.items');
-      this.#items = raw ? JSON.parse(raw) : this._defaults();
+      if (raw) {
+        const saved = JSON.parse(raw);
+        // Merge: add any default app shortcuts that aren't in the saved layout
+        const savedAppIds = new Set(
+          saved.filter(i => i.type === 'app').map(i => i.appId)
+        );
+        const missing = this._defaults().filter(
+          d => d.type === 'app' && !savedAppIds.has(d.appId)
+        );
+        this.#items = [...saved, ...missing];
+        if (missing.length) this._save();
+      } else {
+        this.#items = this._defaults();
+      }
     } catch {
       this.#items = this._defaults();
     }
@@ -110,9 +123,11 @@ export class Desktop {
     if (item.type === 'app') {
       const manifest = this.#kernel.apps.get(item.appId);
       iconEl = document.createElement('img');
+      iconEl.className = 'desktop-icon-img';
       iconEl.src = manifest?.icon ?? 'assets/icons/apps/about.svg';
       iconEl.alt = item.name;
-      iconEl.style.cssText = 'width:48px;height:48px;border-radius:12px;pointer-events:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));';
+      const sz = this.#kernel.settings.get('desktop.iconSize', 48);
+      iconEl.style.cssText = `width:${sz}px;height:${sz}px;border-radius:12px;pointer-events:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));`;
     } else {
       iconEl = document.createElement('div');
       iconEl.textContent = '📁';
@@ -120,6 +135,7 @@ export class Desktop {
     }
 
     const label = document.createElement('span');
+    label.className = 'desktop-icon-label';
     label.textContent = item.name;
     label.style.cssText = [
       'font-size:11px',
