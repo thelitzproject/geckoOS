@@ -119,6 +119,26 @@ const BUILTIN_APPS = [
     resizable: false,
     allowMultiple: false,
   },
+  {
+    id: 'image-viewer',
+    name: 'Image Viewer',
+    icon: 'assets/icons/apps/image-viewer.svg',
+    module: '../../apps/image-viewer/index.js',
+    category: 'utilities',
+    keywords: ['image', 'photo', 'picture', 'view', 'png', 'jpg', 'svg', 'gif'],
+    defaultSize: { width: 720, height: 540 },
+    allowMultiple: true,
+  },
+  {
+    id: 'browser',
+    name: 'Browser',
+    icon: 'assets/icons/apps/browser.svg',
+    module: '../../apps/browser/index.js',
+    category: 'utilities',
+    keywords: ['browser', 'web', 'internet', 'litzium', 'surf'],
+    defaultSize: { width: 1100, height: 700 },
+    allowMultiple: true,
+  },
 ];
 
 // Third-party apps installed via the App Store (stored in IndexedDB)

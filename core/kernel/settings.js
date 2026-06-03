@@ -72,11 +72,12 @@ export class Settings {
 
     const wallpaper = this.get('desktop.wallpaper');
     const surface = document.getElementById('desktop-surface');
-    // Gradient themes override the wallpaper with their own CSS variable
-    const gradientThemes = ['sunset'];
     if (surface) {
-      if (gradientThemes.includes(theme)) {
+      if (theme === 'sunset' && !wallpaper.startsWith('gradient:') && !wallpaper.startsWith('assets/')) {
+        // Sunset theme uses its own CSS gradient by default
         surface.style.backgroundImage = 'var(--color-desktop-bg)';
+      } else if (wallpaper.startsWith('gradient:')) {
+        surface.style.backgroundImage = wallpaper.slice('gradient:'.length);
       } else {
         surface.style.backgroundImage = wallpaper ? `url(${wallpaper})` : '';
       }
