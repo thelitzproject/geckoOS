@@ -67,13 +67,16 @@ export class Spotlight {
     this.#resultItems = [];
     this.#selectedIdx = -1;
     if (!query.trim()) return;
+    this._searchAsync(query);
+  }
+
+  async _searchAsync(query) {
 
     const appResults = this.#kernel.apps.search(query);
-    const fileResults = []; // TODO: VFS search
 
     if (appResults.length) {
       this._addSection('Applications');
-      for (const app of appResults.slice(0, 6)) {
+      for (const app of appResults.slice(0, 5)) {
         this._addResult({
           icon: app.icon, name: app.name,
           desc: `Application · ${app.category}`,
@@ -82,14 +85,64 @@ export class Spotlight {
       }
     }
 
-    if (!appResults.length && !fileResults.length) {
-      const el = document.createElement('div');
-      el.style.cssText = 'padding:20px;text-align:center;color:var(--color-text-secondary);font-size:13px';
-      el.textContent = `No results for "${query}"`;
-      this.#results.appendChild(el);
-    }
-
     if (this.#resultItems.length > 0) this._select(0);
+
+    // VFS file search runs async — append results as they arrive
+    this._searchFiles(query.trim()).then(fileResults => {
+      if (!fileResults.length && !appResults.length) {
+        const el = document.createElement('div');
+        el.style.cssText = 'padding:20px;text-align:center;color:var(--color-text-secondary);font-size:13px';
+        el.textContent = `No results for "${query}"`;
+        this.#results.appendChild(el);
+        return;
+      }
+      if (!fileResults.length) return;
+      this._addSection('Files');
+      for (const f of fileResults.slice(0, 8)) {
+        const ext   = f.name.split('.').pop().toLowerCase();
+        const emoji = { png:'🖼',jpg:'🖼',jpeg:'🖼',svg:'🖼',txt:'📝',md:'📝',js:'📄',json:'📋' }[ext] ?? '📄';
+        const idx = this.#resultItems.length;
+        this._addResult({
+          icon: null, emoji, name: f.name, desc: f.path,
+          action: () => {
+            this.hide();
+            const textExts = ['txt','md','json','js','ts','css','html','sh'];
+            const imgExts  = ['png','jpg','jpeg','gif','svg','webp'];
+            if (textExts.includes(ext)) this.#kernel.openApp('textpad', { path: f.path });
+            else if (imgExts.includes(ext)) this.#kernel.openApp('image-viewer', { path: f.path });
+            else this.#kernel.openApp('finder', { path: f.path.split('/').slice(0,-1).join('/') });
+          },
+        });
+        if (idx === 0 && this.#selectedIdx === -1) this._select(0);
+      }
+    });
+  }
+
+  async _searchFiles(query) {
+    if (!this.#kernel.gsl?.fs) return [];
+    const q = query.toLowerCase();
+    const results = [];
+    const dirs = ['/home/user', '/home/user/Documents', '/home/user/Desktop', '/home/user/Downloads', '/home/user/Pictures'];
+    const visited = new Set();
+
+    const scan = async (dir, depth) => {
+      if (depth > 2 || visited.has(dir) || results.length >= 20) return;
+      visited.add(dir);
+      let entries;
+      try { entries = await this.#kernel.gsl.fs.readdir(dir); } catch { return; }
+      for (const name of entries) {
+        if (results.length >= 20) return;
+        const fp = `${dir}/${name}`;
+        if (name.toLowerCase().includes(q)) results.push({ name, path: fp });
+        try {
+          const stat = await this.#kernel.gsl.fs.stat(fp);
+          if (stat.type === 'dir') await scan(fp, depth + 1);
+        } catch {}
+      }
+    };
+
+    await Promise.all(dirs.map(d => scan(d, 0)));
+    return results;
   }
 
   _addSection(title) {
