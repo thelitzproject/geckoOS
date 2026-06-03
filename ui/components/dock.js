@@ -24,6 +24,37 @@ export class Dock {
       if (!manifest) continue;
       this._addIcon(appId, manifest);
     }
+
+    this._applyAutohide();
+    this.#kernel.events.on('settings:changed', ({ key }) => {
+      if (key === 'dock.autohide') this._applyAutohide();
+    });
+  }
+
+  _applyAutohide() {
+    const container = document.getElementById('dock-container');
+    if (!container) return;
+    const on = this.#kernel.settings.get('dock.autohide');
+    container.classList.toggle('autohide', on);
+
+    if (on) {
+      // Show dock when cursor is near the bottom of the screen
+      const trigger = e => {
+        const threshold = 8;
+        const nearBottom = e.clientY >= window.innerHeight - threshold;
+        container.classList.toggle('force-show', nearBottom);
+      };
+      if (!this._autohideListener) {
+        this._autohideListener = trigger;
+        document.addEventListener('mousemove', trigger);
+      }
+    } else {
+      if (this._autohideListener) {
+        document.removeEventListener('mousemove', this._autohideListener);
+        this._autohideListener = null;
+      }
+      container.classList.remove('force-show');
+    }
   }
 
   _addIcon(appId, manifest) {

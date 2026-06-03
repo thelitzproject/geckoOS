@@ -17,21 +17,27 @@ export class MenuBar {
 
   _initClock() {
     const tick = () => {
-      const now   = new Date();
-      const h24   = this.#kernel.settings.get('menubar.clock24h');
-      const showD = this.#kernel.settings.get('menubar.showDate');
+      const now     = new Date();
+      const h24     = this.#kernel.settings.get('menubar.clock24h');
+      const showD   = this.#kernel.settings.get('menubar.showDate');
+      const showSec = this.#kernel.settings.get('menubar.showSeconds');
 
       const time = now.toLocaleTimeString([], {
-        hour: 'numeric', minute: '2-digit', second: undefined,
+        hour: 'numeric', minute: '2-digit',
+        second: showSec ? '2-digit' : undefined,
         hour12: !h24,
       });
       const date = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
-
       this.#clockEl.textContent = showD ? `${date}  ${time}` : time;
     };
 
     tick();
     this.#clockTimer = setInterval(tick, 1000);
+
+    // Re-render immediately when any menubar setting changes
+    this.#kernel.events.on('settings:changed', ({ key }) => {
+      if (typeof key === 'string' && key.startsWith('menubar.')) tick();
+    });
   }
 
   _initButtons() {
